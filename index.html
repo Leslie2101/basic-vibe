@@ -50,79 +50,140 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     }
     #spotifyPlayer {
+      margin-top: 20px;
+    }
+    #content {
       display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    #pinContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 50px;
+    }
+    .pin-boxes {
+      display: flex;
+      gap: 10px;
+    }
+    .pin-box {
+      width: 40px;
+      height: 50px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid #ccc;
+      outline: none;
+    }
+    button#pinBtn {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #ff88aa;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Time Since We Started ❤️</h1>
+
+<div id="pinContainer">
+  <h1>Enter PIN to view page </h1>
+  <div class="pin-boxes">
+    <input type="text" maxlength="1" class="pin-box" />
+    <input type="text" maxlength="1" class="pin-box" />
+    <input type="text" maxlength="1" class="pin-box" />
+    <input type="text" maxlength="1" class="pin-box" />
+    <input type="text" maxlength="1" class="pin-box" />
+    <input type="text" maxlength="1" class="pin-box" />
+  </div>
+  <button id="pinBtn">Submit</button>
+</div>
+
+<div id="content">
+  <h1>Time Since Everything Started</h1>
   <div class="timer" id="timer">Loading...</div>
-
   <div class="quote" id="quote"></div>
-
-  <script>
-    const startDate = new Date("2023-11-15T21:00:00");
-
-    function updateTimer() {
-      const now = new Date();
-      const diff = now - startDate;
-
-      // Calculate years and remaining days
-      const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-
-      const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 365.25);(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-
-      document.getElementById("timer").textContent =
-        `${years} yrs • ${days} days • ${hours} hrs • ${minutes} mins • ${seconds} secs`;
-        `${days} days • ${hours} hrs • ${minutes} mins • ${seconds} secs`;
-    }
-
-    setInterval(updateTimer, 1000);
-    updateTimer();
-
-    const quotes = [
-      "My very sweet, charming one",
-      "You are my today and all of my tomorrows.",
-      "Every moment with you is my favorite memory.",
-      "Love grows more tremendously full, swift, and poignant as the years multiply.",
-      "You make my heart smile."
-    ];
-
-    function showRandomQuote() {
-      const q = quotes[Math.floor(Math.random() * quotes.length)];
-      document.getElementById("quote").textContent = q;
-    }
-
-    showRandomQuote();
-  </script>
-
-  <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-
-  <iframe id="spotifyPlayer" src="https://open.spotify.com/embed/playlist/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" width="0" height="0" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
-
+  <iframe id="spotifyPlayer" src="https://open.spotify.com/embed/album/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" width="70%" height="352" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
   <button class="music-btn" id="musicBtn">🎵</button>
+</div>
 
-  <script>
-    const musicBtn = document.getElementById('musicBtn');
-    const player = document.getElementById('spotifyPlayer');
-    let isPlaying = false;
+<script>
+const pinBtn = document.getElementById('pinBtn');
+const pinContainer = document.getElementById('pinContainer');
+const content = document.getElementById('content');
+const pinBoxes = document.querySelectorAll('.pin-box');
 
-    musicBtn.addEventListener('click', () => {
-      if (!isPlaying) {
-        player.style.display = 'block';
-        const src = player.src;
-        player.src = src;
-        musicBtn.textContent = '⏸️';
-        isPlaying = true;
-      } else {
-        player.src = '';
-        musicBtn.textContent = '🎵';
-        isPlaying = false;
-      }
-    });
-  </script>
+pinBoxes.forEach((box, i) => {
+  box.addEventListener('input', () => {
+    if (box.value.length === 1 && i < pinBoxes.length - 1) {
+      pinBoxes[i + 1].focus();
+    }
+  });
+});
+
+pinBtn.addEventListener('click', () => {
+  const pin = Array.from(pinBoxes).map(b => b.value).join('');
+  if (pin === '151123') {
+    pinContainer.style.display = 'none';
+    content.style.display = 'flex';
+    startApp();
+  } else {
+    alert('Incorrect PIN!');
+    pinBoxes.forEach(b => b.value = '');
+    pinBoxes[0].focus();
+  }
+});
+
+function startApp() {
+  const startDate = new Date("2023-11-15T21:00:00");
+  function updateTimer() {
+    const now = new Date();
+    const diff = now - startDate;
+    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 365.25);
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+    document.getElementById("timer").textContent = `${years} yrs • ${days} days • ${hours} hrs • ${minutes} mins • ${seconds} secs`;
+  }
+  setInterval(updateTimer, 1000);
+  updateTimer();
+
+  const quotes = [
+    "My very sweet, charming one",
+    "You are my today and all of my tomorrows.",
+    "Every moment with you is my favorite memory.",
+    "Love grows more tremendously full, swift, and poignant as the years multiply.",
+    "You make my heart smile."
+  ];
+  function showRandomQuote() {
+    const q = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote").textContent = q;
+  }
+  showRandomQuote();
+
+  const musicBtn = document.getElementById('musicBtn');
+  const player = document.getElementById('spotifyPlayer');
+  let isPlaying = false;
+  musicBtn.addEventListener('click', () => {
+    if (!isPlaying) {
+      player.style.display = 'block';
+      player.src = player.src;
+      musicBtn.textContent = '⏸️';
+      isPlaying = true;
+    } else {
+      player.src = '';
+      musicBtn.textContent = '🎵';
+      isPlaying = false;
+    }
+  });
+}
+</script>
+
 </body>
 </html>
