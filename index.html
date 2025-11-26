@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Days Together</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff6f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      color: #333;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+    .timer {
+      font-size: 1.6rem;
+      margin-top: 20px;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .quote {
+      margin-top: 30px;
+      font-style: italic;
+      opacity: 0.8;
+    }
+    .music-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #ff88aa;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    #spotifyPlayer {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Time Since We Started ❤️</h1>
+  <div class="timer" id="timer">Loading...</div>
+
+  <div class="quote" id="quote"></div>
+
+  <script>
+    const startDate = new Date("2023-11-15T21:00:00");
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = now - startDate;
+
+      // Calculate years and remaining days
+      const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+
+      const days = Math.floor((diff / (1000 * 60 * 60 * 24)) % 365.25);(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("timer").textContent =
+        `${years} yrs • ${days} days • ${hours} hrs • ${minutes} mins • ${seconds} secs`;
+        `${days} days • ${hours} hrs • ${minutes} mins • ${seconds} secs`;
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    const quotes = [
+      "My very sweet, charming one",
+      "You are my today and all of my tomorrows.",
+      "Every moment with you is my favorite memory.",
+      "Love grows more tremendously full, swift, and poignant as the years multiply.",
+      "You make my heart smile."
+    ];
+
+    function showRandomQuote() {
+      const q = quotes[Math.floor(Math.random() * quotes.length)];
+      document.getElementById("quote").textContent = q;
+    }
+
+    showRandomQuote();
+  </script>
+
+  <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+  <iframe id="spotifyPlayer" src="https://open.spotify.com/embed/playlist/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" width="0" height="0" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
+
+  <button class="music-btn" id="musicBtn">🎵</button>
+
+  <script>
+    const musicBtn = document.getElementById('musicBtn');
+    const player = document.getElementById('spotifyPlayer');
+    let isPlaying = false;
+
+    musicBtn.addEventListener('click', () => {
+      if (!isPlaying) {
+        player.style.display = 'block';
+        const src = player.src;
+        player.src = src;
+        musicBtn.textContent = '⏸️';
+        isPlaying = true;
+      } else {
+        player.src = '';
+        musicBtn.textContent = '🎵';
+        isPlaying = false;
+      }
+    });
+  </script>
+</body>
+</html>
