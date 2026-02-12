@@ -133,6 +133,40 @@
   <div class="quote" id="quote"></div>
   <iframe id="spotifyPlayer" src="https://open.spotify.com/embed/album/1nMHkGDJwTvoW3LTTdUVwA?utm_source=generator" height="352" frameBorder="0" allow="autoplay; encrypted-media"></iframe>
   <button class="music-btn" id="musicBtn">🎵</button>
+  <div id="terminalSection" style="margin-top:40px; width:100%; max-width:500px; display:none;">
+  <h2 style="text-align:center; font-size:1.2rem;">Secret Console 💻</h2>
+  <div id="terminalBox" style="
+      background:#111;
+      color:#00ff88;
+      font-family:monospace;
+      padding:15px;
+      border-radius:15px;
+      height:200px;
+      overflow-y:auto;
+      font-size:0.9rem;
+      box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  ">
+  Welcome to the hidden console...
+  Hint: If love were a Python package, how would you install it?
+    </div>
+    <div style="display:flex; margin-top:5px;">
+      <span style="color:#00ff88; font-family:monospace;">$&nbsp;</span>
+      <input id="terminalInput"
+            style="flex:1; background:#111; color:#00ff88; border:none; outline:none; font-family:monospace;"
+            autocomplete="off">
+    </div>
+  </div>
+
+  <div id="lockedMessage" style="
+    margin-top:40px;
+    text-align:center;
+    font-style:italic;
+    opacity:0.8;
+  ">
+    🔒 This secret unlocks at the right moment.
+</div>
+
+
 </div>
 
 <script>
@@ -205,6 +239,101 @@ function startApp() {
       isPlaying = false;
     }
   });
+
+  // ===== Time Lock for Console =====
+const unlockAt = new Date("2026-02-14T21:00:00"); // ← CHANGE THIS
+const now = new Date();
+
+const terminalSection = document.getElementById("terminalSection");
+const lockedMessage = document.getElementById("lockedMessage");
+
+if (now >= unlockAt) {
+  terminalSection.style.display = "block";
+  lockedMessage.style.display = "none";
+} else {
+  terminalSection.style.display = "none";
+  lockedMessage.style.display = "block";
+}
+
+
+// Terminal Logic
+const terminalInput = document.getElementById("terminalInput");
+const terminalBox = document.getElementById("terminalBox");
+
+function typeLine(text, delay = 30) {
+  return new Promise(resolve => {
+    let i = 0;
+    const interval = setInterval(() => {
+      terminalBox.innerHTML += text[i];
+      i++;
+      if (i >= text.length) {
+        clearInterval(interval);
+        terminalBox.innerHTML += "\n";
+        terminalBox.scrollTop = terminalBox.scrollHeight;
+        resolve();
+      }
+    }, delay);
+  });
+}
+
+function progressBar(duration = 3000) {
+  return new Promise(resolve => {
+    const totalBlocks = 20;
+    let progress = 0;
+
+    const interval = setInterval(() => {
+      progress++;
+      const filled = "█".repeat(progress);
+      const empty = "░".repeat(totalBlocks - progress);
+      terminalBox.innerHTML = terminalBox.innerHTML.replace(/Installing:.*/g, "");
+      terminalBox.innerHTML += `Installing: [${filled}${empty}] ${Math.floor((progress/totalBlocks)*100)}%\n`;
+      terminalBox.scrollTop = terminalBox.scrollHeight;
+
+      if (progress >= totalBlocks) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, duration / totalBlocks);
+  });
+}
+
+terminalInput.addEventListener("keydown", async function(e) {
+  if (e.key === "Enter") {
+    const command = terminalInput.value.trim();
+    terminalBox.innerHTML += "\n$ " + command + "\n";
+    terminalInput.value = "";
+
+    const validCommands = [
+      "pip install love.whl",
+      "mylove"
+    ];
+
+    if (validCommands.includes(command)) {
+
+      await typeLine("Preparing installation...\n");
+      await typeLine("Compiling feelings...\n");
+      await progressBar(2500);
+      await typeLine("Linking hearts...\n");
+      await typeLine("Finalizing love package...\n");
+      await typeLine("Installation successful ❤️\n");
+
+      const encodedLink = "aHR0cHM6Ly9kcml2ZS5nb29nbGUuY29tL2ZpbGUvZC8xbXNfaHh5QnFhQ2MteDR3UVoxSWphZklXYkZnbDltUGsvdmlldz91c3A9c2hhcmluZw==";
+      const decodedLink = atob(encodedLink);
+
+      terminalBox.innerHTML += 
+        "\nDownload your reward:\n" +
+        "<a href='" + decodedLink + "' target='_blank' style='color:#ff88aa;'>love.whl</a>\n";
+
+    } else if (command === "help") {
+      await typeLine("Available commands:");
+      await typeLine("  pip install love.whl");
+    } else {
+      await typeLine("Command not recognized.");
+    }
+
+    terminalBox.scrollTop = terminalBox.scrollHeight;
+  }
+});
 }
 </script>
 
